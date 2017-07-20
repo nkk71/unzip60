@@ -1237,7 +1237,11 @@ void close_outfile(__G)    /* GRR: change to return PK-style warning level */
   ---------------------------------------------------------------------------*/
 
     if (fchmod(fileno(G.outfile), filtattr(__G__ G.pInfo->file_attr)))
+#ifndef SILENCE_ANDROID_TERMINAL_WARNINGS
         perror("fchmod (file attributes) error");
+#else
+        ;
+#endif
 
     fclose(G.outfile);
 #endif /* !NO_FCHOWN && !NO_FCHMOD */
@@ -1247,11 +1251,19 @@ void close_outfile(__G)    /* GRR: change to return PK-style warning level */
         /* set the file's access and modification times */
         if (utime(G.filename, &(zt.t2))) {
             if (uO.qflag)
+#ifndef SILENCE_ANDROID_TERMINAL_WARNINGS
                 Info(slide, 0x201, ((char *)slide, CannotSetItemTimestamps,
                   FnFilter1(G.filename), strerror(errno)));
+#else
+                ;
+#endif
             else
+#ifndef SILENCE_ANDROID_TERMINAL_WARNINGS
                 Info(slide, 0x201, ((char *)slide, CannotSetTimestamps,
                   strerror(errno)));
+#else
+                ;
+#endif
         }
     }
 
